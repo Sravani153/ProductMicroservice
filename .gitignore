@@ -1,0 +1,7 @@
+# Project exclude paths
+/discovery-server/target/
+/order-service/target/
+/product-service/target/
+.idea
+/order-service/.apt_generated
+/order-service/.apt_generated_tests
