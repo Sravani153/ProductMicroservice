@@ -55,4 +55,15 @@ public class ProductWebClientService {
                 .bodyToMono(ProductDto.class)
                 .block();
     }
+
+    public ProductDto updateProductById(Long id, ProductDto productDto) {
+        return webClientBuilder.build()
+                .put()
+                .uri("http://product-service/api/product/{id}", id)
+                .header("Authorization", "Bearer " + jwtTokenProvider.getToken())
+                .bodyValue(productDto)
+                .retrieve()
+                .bodyToMono(ProductDto.class)
+                .block();
+    }
 }

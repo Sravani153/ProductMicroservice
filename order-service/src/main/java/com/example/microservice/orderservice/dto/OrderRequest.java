@@ -9,8 +9,9 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class OrderRequest {
- private Long userId;
- private PaymentMode paymentMode;
- private List<OrderedItemsRequest> orderedItemsDtosList;
+    private Long userId;
 
+    private PaymentMode paymentMode;
+
+    private List<OrderedItemsRequest> orderedItemsDtosList;
 }

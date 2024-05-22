@@ -2,7 +2,13 @@ package com.example.microservice.orderservice.service;
 
 import com.example.microservice.orderservice.Enum.OrderStatus;
 import com.example.microservice.orderservice.Exception.NotFoundException;
-import com.example.microservice.orderservice.dto.*;
+import com.example.microservice.orderservice.dto.ProductDto;
+import com.example.microservice.orderservice.dto.UserDto;
+import com.example.microservice.orderservice.dto.OrderItemResponseDto;
+import com.example.microservice.orderservice.dto.OrderRequest;
+import com.example.microservice.orderservice.dto.PlaceOrderResponseDto;
+import com.example.microservice.orderservice.dto.OrderedItemsRequest;
+import com.example.microservice.orderservice.dto.InventoryResponse;
 import com.example.microservice.orderservice.mapper.OrderMapper;
 import com.example.microservice.orderservice.entity.Order;
 import com.example.microservice.orderservice.entity.OrderedItems;
@@ -17,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
                 ProductDto product = productWebClientService.getProductById(orderedItemsRequest.getProductId());
                 if (product == null) {
                     throw new NotFoundException("Product not found with ID: " + orderedItemsRequest.getProductId());
+                }
+                if (product.getQuantity() < orderedItemsRequest.getQuantity()) {
+                    throw new NotFoundException("Requested Quantity is greater than original Product stock for Product: " + product.getName());
                 }
             });
             orderedItems = orderedItemsList.stream()
@@ -99,6 +107,11 @@ public class OrderServiceImpl implements OrderService {
         orderItemResponseDtos.forEach(orderItemResponseDto -> {
             ProductDto product = productWebClientService.getProductById(orderItemResponseDto.getProductId());
             orderItemResponseDto.setProductType(product.getType());
+            product.setQuantity(product.getQuantity() - orderItemResponseDto.getQuantity());
+            ProductDto updatedProduct = productWebClientService.updateProductById(product.getId(), product);
+            if (!product.getQuantity().equals(updatedProduct.getQuantity())) {
+                throw new NotFoundException("PRODUCT_QUANTITY_NOT_UPDATED");
+            }
         });
         response.setOrderedItemsList(orderItemResponseDtos);
         return response;

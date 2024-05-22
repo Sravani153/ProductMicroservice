@@ -19,7 +19,6 @@ public class PlaceOrderResponseDto {
     private Long userId;
     private String orderNumber;
     private OrderStatus orderStatus;
-    //check
     private PaymentMode paymentMode;
     private List<OrderItemResponseDto> orderedItemsList;
     private LocalDateTime purchasedDate;
