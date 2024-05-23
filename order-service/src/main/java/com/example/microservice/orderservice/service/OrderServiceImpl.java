@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemResponseDto.setProductType(product.getType());
             product.setQuantity(product.getQuantity() - orderItemResponseDto.getQuantity());
             ProductDto updatedProduct = productWebClientService.updateProductById(product.getId(), product);
-            if (!product.getQuantity().equals(updatedProduct.getQuantity())) {
+            if (updatedProduct == null) {
                 throw new NotFoundException("PRODUCT_QUANTITY_NOT_UPDATED");
             }
         });
@@ -145,10 +145,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByProductType(Long id) {
-        var userDto = productWebClientService.getProductTypeById(id);
+        var productTypeDto = productWebClientService.getProductTypeById(id);
 
-        if (userDto != null) {
-            return orderRepo.findByUserId(userDto.getId());
+        if (productTypeDto != null) {
+            return orderRepo.findByUserId(productTypeDto.getId());
         } else {
             throw new NotFoundException("User not found with ID: " + id);
         }
