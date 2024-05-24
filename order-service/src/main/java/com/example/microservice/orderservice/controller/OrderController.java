@@ -77,11 +77,11 @@ public class OrderController {
      *
      * @return ResponseEntity<List<Order>> Returns HTTP status and list of all orders.
      */
-    @GetMapping("/getall")
+    @GetMapping("/getAll")
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
         if (orders.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(orders);
         }
